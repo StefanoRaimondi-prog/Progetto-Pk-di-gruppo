@@ -67,3 +67,106 @@ def analizza_pokemon():
 
 # Esecuzione della funzione
 analizza_pokemon()
+
+# Connessione al database
+conn = db.get_connection()
+
+cursor = conn.cursor()
+
+# Esegui una query per ottenere nome, hp, attacco e difesa dei Pokémon
+cursor.execute('''
+    SELECT DISTINCT p.name, bs.hp, bs.attack, bs.defense
+    FROM pokemon p
+    JOIN base_stats bs ON p.id = bs.pokemon_id
+''')
+# Ottieni tutti i risultati
+risultati = cursor.fetchall()
+
+# Se non ci sono dati, interrompi
+if not risultati:
+    print("Nessun Pokémon trovato.")
+    exit()
+
+# Separiamo i nomi e i dati numerici
+nomi = [r[0] for r in risultati]                  # Solo i nomi
+dati = np.array([r[1:] for r in risultati])       # Solo hp, attack, defense
+
+# Nomi degli attributi, nello stesso ordine dei dati
+attributi = ["HP", "ATTACK", "DEFENSE"]
+
+# Chiediamo all'utente cosa vuole fare
+scelta = input("Vuoi cercare Pokémon con valori maggiori o minori di un numero? (1/2): ")
+
+if scelta == "1":
+    # Chiediamo all'utente un numero di confronto
+    n = int(input("Inserisci un numero per confrontare HP, ATTACK e DEFENSE. Valore maggiore di: "))
+    
+    # Stampiamo i Pokémon con valori MAGGIORI di n
+    print(f"\nPokémon con valori MAGGIORI di {n}")
+    for i in range(3):  # Per ogni colonna: hp, attacco, difesa
+        print(f"\n{attributi[i]} > {n}:")
+        trovati = False
+        for j in range(len(nomi)):  # Per ogni Pokémon
+            if dati[j][i] > n:
+                print(f" - {nomi[j]} → {attributi[i]} = {dati[j][i]}")
+                trovati = True
+        if not trovati:
+            print(f"  Nessun Pokémon ha {attributi[i]} maggiore di {n}")
+
+elif scelta == "2":
+    # Chiediamo all'utente un numero di confronto
+    n = int(input("Inserisci un numero per confrontare HP, ATTACK e DEFENSE. Valore minore di: "))
+    
+    # Stampiamo i Pokémon con valori MINORI di n
+    print(f"\nPokémon con valori MINORI di {n}")
+    for i in range(3):  # Per ogni colonna: hp, attacco, difesa
+        print(f"\n{attributi[i]} < {n}:")
+        trovati = False
+        for j in range(len(nomi)):  # Per ogni Pokémon
+            if dati[j][i] < n:
+                print(f" - {nomi[j]} → {attributi[i]} = {dati[j][i]}")
+                trovati = True
+        if not trovati:
+            print(f"  Nessun Pokémon ha {attributi[i]} minore di {n}")
+
+else:
+    print("Scelta non valida. Inserisci 'maggiori' o 'minori'.")
+
+# Chiudere connessione e cursore
+cursor.close()
+conn.close()
+# # Ottieni tutti i risultati
+# risultati = cursor.fetchall()
+
+# # Se non ci sono dati, interrompi
+# if not risultati:
+#     print("Nessun Pokémon trovato.")
+#     exit()
+
+# # Separiamo i nomi e i dati numerici
+# nomi = [r[0] for r in risultati]                  # Solo i nomi
+# dati = np.array([r[1:] for r in risultati])# Solo hp, attack, defense
+
+# # Chiediamo all’utente un numero di confronto
+# n = int(input("Inserisci un numero per confrontare HP, ATTACK e DEFENSE. Valore maggiore di: "))
+
+# # Nomi degli attributi, nello stesso ordine dei dati
+# attributi = ["HP", "ATTACK", "DEFENSE"]
+
+# # Stampiamo i Pokémon con valori MAGGIORI di n
+# print("\nPokémon con valori MAGGIORI di", n)
+# for i in range(3):  # Per ogni colonna: hp, attacco, difesa
+#     print(f"\n{attributi[i]} > {n}:")
+#     for j in range(len(nomi)):  # Per ogni Pokémon
+#         if dati[j][i] > n:
+#             print(f" - {nomi[j]} → {attributi[i]} = {dati[j][i]}")
+
+
+# n = int(input("Inserisci un numero per confrontare HP, ATTACK e DEFENSE. Valore minore di: "))
+# # Stampiamo i Pokémon con valori MINORI di n
+# print("\nPokémon con valori MINORI di", n)
+# for i in range(3):  # Per ogni colonna: hp, attacco, difesa
+#     print(f"\n{attributi[i]} < {n}:")
+#     for j in range(len(nomi)):  # Per ogni Pokémon
+#         if dati[j][i] < n:
+#             print(f" - {nomi[j]} → {attributi[i]} = {dati[j][i]}")
