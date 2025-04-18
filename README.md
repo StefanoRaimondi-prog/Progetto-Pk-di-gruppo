@@ -30,7 +30,7 @@ Lo script richiede un database con almeno le seguenti tabelle:
 1. Assicurarsi che il modulo di connessione al database (`Db.py`) sia configurato correttamente
 2. Eseguire lo script:
    ```
-   python analisi_pokemon.py
+   TestMaxMinValori.py
    ```
 3. Quando richiesto, inserire i valori di soglia per trovare Pokémon con statistiche superiori o inferiori a tali valori
 
